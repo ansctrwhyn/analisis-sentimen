@@ -1,0 +1,100 @@
+{% include 'partisi/header.html' %}
+{% include 'partisi/navbar.html' %}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+	<!-- Content Header (Page header) -->
+
+	<div class="container-fluid" style="margin-top:50px">
+		<!-- Breadcrumbs-->
+		<!-- <ol class="breadcrumb shadow" style="background-color:#fff">
+			<li class="breadcrumb-item active">Dashboard</li>
+		</ol>
+		<div class="flash-password" data-flashdata="<?= $this->session->flashdata('password'); ?>"></div>
+		
+		 /.container-fluid -->
+
+		<div class="col">
+			<img src="{{ url_for('static', filename='images/undip.png') }}" width="120px"
+				style="display:block;margin-left:auto;margin-right:auto;padding-top:20px">
+		</div>
+		<div class="col pt-2 pb-2">
+			<h4 style="text-align: center;padding-left:100px;padding-right:100px"> Aplikasi Analisis Sentimen pada
+				Twitter Mengenai Pelayanan Ekspedisi SiCepat Menggunakan Metode <i>K-Nearest Neighbor</i>
+			</h4>
+		</div>
+		<!-- <div class="row">
+			<div class="col-xl mb-6 pb-3">
+				<a href="<?= base_url('admin/informasi_berkala') ?>">
+					<div class="card shadow h-100 py-2" style="border-left:7px solid black">
+						<div class="card-body">
+							<div class="row no-gutters align-items-center">
+								<div class="col mr-2">
+									<div class="text-md font-weight-bold text-dark text-uppercase mb-2">Data Training</div>
+									<div class="h3 mb-0 font-weight-bold text-gray-800">
+										0
+									</div>
+								</div>
+								<div class="col-auto">
+									<i class=" fas fa-folder-open fa-2x text-gray-300"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="col-xl mb-6 pb-3">
+				<a href="<?= base_url() . 'admin/permohonan' ?>">
+					<div class="card shadow h-100 py-2" style="border-left:7px solid #dc3545">
+						<div class="card-body">
+							<div class="row no-gutters align-items-center">
+								<div class="col mr-2">
+									<div class="text-md font-weight-bold text-danger text-uppercase mb-2">Data Uji</div>
+									<div class="h3 mb-0 font-weight-bold text-gray-800">
+										0
+									</div>
+								</div>
+								<div class="col-auto">
+									<i class="fab fa-wpforms fa-2x text-gray-300"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="col-xl mb-6 pb-3">
+				<a href="<?= base_url() . 'admin/kotak_saran' ?>">
+					<div class="card shadow h-100 py-2" style="border-left:7px solid #28a745">
+						<div class="card-body">
+							<div class="row no-gutters align-items-center">
+								<div class="col mr-2">
+									<div class="text-md font-weight-bold text-success text-uppercase mb-2">Kotak Saran</div>
+									<div class="h3 mb-0 font-weight-bold text-gray-800">
+
+									</div>
+								</div>
+								<div class="col-auto">
+									<i class="fas fa-envelope fa-2x text-gray-300"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+		</div> -->
+		<div class="col-xl pt-2 pl-5 pr-5">
+			<div class="card shadow">
+				<div class="card-header">
+					<i class="fas fa-info-circle"></i>
+					<span style="font-weight: bold;">Petunjuk Penggunaan</span>
+				</div>
+				<div class="card-body">
+					{{ data }}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% include 'partisi/sidebar.html' %}
+{% include 'partisi/footer.html' %}

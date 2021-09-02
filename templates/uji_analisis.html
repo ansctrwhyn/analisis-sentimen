@@ -1,0 +1,92 @@
+{% include 'partisi/header.html' %}
+{% include 'partisi/navbar.html' %}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+
+    <div class=" container-fluid" style="padding-top:65px">
+
+        <div class="row ml-1 mr-1 shadow" style="background:white; border-radius: 4px;">
+            <div class="col-sm-6">
+                <h3 class="m-0 text-dark pt-2 ml-2"> Uji Analisis Sentimen</h3>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right mb-1" style="background: none;">
+                    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Beranda</a></li>
+                    <li class="breadcrumb-item active">Uji Analisis Sentimen</li>
+                </ol>
+            </div><!-- /.col -->
+        </div>
+
+        <!-- DataTables Example -->
+        <div class="card ml-1 mr-1 mt-2 mb-5 shadow">
+            <!-- <div class="card-header" style="background-color:#F9EBEA;"><i class="fas fa-table"></i> SKPD</div> -->
+            <div class="card-header" style="letter-spacing:1px;">
+                <!-- <h3><i class="fas fa-table"></i> TABEL DOKUMEN</h3> -->
+                <div class="row">
+                    <div class="col-sm-3 ">
+                        <label for="k" class="col-form-label">Masukkan jumlah data : </label>
+                    </div>
+                    <form method="POST" action="" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-sm-4" style="margin-left:-60px">
+                                <input type="number" min="1" class="form-control" id="count" name="count" value=""
+                                    required>
+                            </div>
+                            <div class="col ml-1">
+                                <button type="submit" class="btn btn-primary">Crawling</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="col">
+                        <a href="" class="btn btn-warning btn-md float-sm-right">Uji Analisis</a>
+                    </div>
+
+
+                </div>
+                <!-- <?= form_error('judul', '<small class="text-danger" >', '</small>'); ?> -->
+            </div>
+            <div class="card-body">
+                <!-- <div id="message"> -->
+                <!-- <?= $this->session->flashdata('message'); ?> -->
+                <!-- <div class="flash-skpd" data-flashdata="<?= $this->session->flashdata('skpd'); ?>"></div> -->
+
+                <!-- </div> -->
+                <!-- <br><br> -->
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center table-striped" id="tbquery" width="100%"
+                        cellspacing="0">
+                        <!-- edited table-->
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Date</th>
+                                <th>Query</th>
+                                <th>Sentimen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data">
+                            {% for i, j in result: %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ i }}</td>
+                                <td style="text-align:left">{{ j }}</td>
+                                <td></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+
+</div>
+<!-- /.content-wrapper -->
+
+{% include 'partisi/sidebar.html' %}
+{% include 'partisi/footer.html' %}

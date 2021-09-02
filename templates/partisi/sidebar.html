@@ -1,0 +1,159 @@
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar elevation-4" style="background-color: #750000">
+    <!-- Brand Logo -->
+    <a href="" class="brand-link pb-0 text-center">
+        <!-- <img src="<?= base_url('assets/') ?>images/logo.png" alt="AdminLTE Logo" class="brand-image elevation-3" style="opacity: .8"> -->
+        <span class="brand-text font-weight-bold text-white" style="font-size:24px;">SKRIPSI</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <a href="" class="user-panel mt-2 mb-3 d-flex"
+            style="background-color:#F9EBEA; border-radius:10px; padding-top:10px; padding-bottom:10px">
+            <div class="image">
+                <img src="{{ url_for('static', filename='images/profil.jpg') }}" class="img-circle pt-1 pb-1 d-flex">
+                <!-- <i class="far fa-user-circle fa-2x mt-1 mb-1 pt-1 pb-1 d-flex" style="color:black;"></i> -->
+            </div>
+            <div class="col ml-2">
+                <div style="color:#750000; font-weight:600">
+                    Anisa Catur Wahyuni
+                </div>
+                <div style="color:#750000; font-weight:600; font-style:italic">
+                    24060117120029
+                </div>
+            </div>
+        </a>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Add icons to the links using the .nav-icon class
+			   with font-awesome or any other icon font library -->
+                <li class="nav-item">
+                    <a href="{{ url_for('index') }}" class="nav-link {% if menu == 'home' %} active {% endif %}">
+                        <i class="nav-icon fas fa-home"></i>
+                        <p>
+                            Beranda
+                        </p>
+                    </a>
+                </li>
+
+                <li class="nav-header text-white">NAVIGATION</li>
+                <li class="nav-item">
+                    <a href="{{ url_for('show_dataset') }}"
+                        class="nav-link {% if menu == 'dataset' %} active {% endif %}">
+                        <i class="nav-icon fas fa-database"></i>
+                        <p>
+                            Dataset
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item has-treeview {% if menu == 'preprocessing' %} menu-open {% endif %}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-filter"></i>
+                        <p>
+                            Text Preprocessing
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ url_for('show_cleansing') }}"
+                                class="nav-link {% if submenu == 'cleansing' %} active {% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Cleansing</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url_for('show_casefolding') }}"
+                                class="nav-link {% if submenu == 'casefolding' %} active {% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Case Folding</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url_for('show_tokenizing') }}"
+                                class="nav-link {% if submenu == 'tokenizing' %} active {% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tokenizing</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url_for('show_filtering') }}"
+                                class="nav-link {% if submenu == 'filtering' %} active {% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Filtering</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url_for('show_stemming') }}"
+                                class="nav-link {% if submenu == 'stemming' %} active {% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Stemming</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('form_klasifikasi') }}"
+                        class="nav-link {% if menu == 'klasifikasi' %} active {% endif %}">
+                        <i class="nav-icon fas fa-table"></i>
+                        <p>
+                            Klasifikasi
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('akurasi') }}" class="nav-link {% if menu == 'akurasi' %} active {% endif %}">
+                        <i class="nav-icon fas fa-percentage"></i>
+                        <p>
+                            Akurasi
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('uji_analisis') }}"
+                        class="nav-link {% if menu == 'ujianalisis' %} active {% endif %}">
+                        <i class="nav-icon fas fa-hourglass-half"></i>
+                        <p>
+                            Uji Analisis Sentimen
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('visualisasi') }}"
+                        class="nav-link {% if menu == 'visualisasi' %} active {% endif %}">
+                        <i class="nav-icon fas fa-chart-pie"></i>
+                        <p>
+                            Visualisasi
+                        </p>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>
+
+<!-- Logout Modal-->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Apakah Anda yakin?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Pilih 'Logout' untuk keluar dari sistem.</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
+                <a class="btn btn-primary" href="">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>

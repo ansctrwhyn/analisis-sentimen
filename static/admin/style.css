@@ -1,0 +1,61 @@
+.nav-pills .nav-link {
+	color: #fff;
+}
+
+.nav-pills .nav-link.active, 
+.nav-pills .show > .nav-link {
+    color:black;
+    background-color: #f8a50b;
+}
+
+.nav-pills .nav-item .nav-link:hover {
+	color: black;
+	background-color: #f8a50b;
+	transition: 0.5s;
+	padding-left: 20px;
+}
+
+.file_upload {
+	position: relative;
+	/* min-width: 500px; */
+	width: 100%;
+	/* text-align: center; */
+	/* color: black; */
+	line-height: 40px;
+	background: #fff;
+}
+  
+.file_upload input[type="file"] {
+	position: absolute;
+	top: 3px;
+	margin-left: 100%;
+}
+
+  /*POST_SLIDER*/
+.post-slider {
+	border: 1px solid red;
+}
+
+.post-slider .post-wrapper {
+	width: 84%;
+	height: 350px;
+	margin: 0px auto;
+	border: 1px dashed red;
+}
+
+.post-slider .post-wrapper .berita {
+	width: 300px; 
+	height: 350px;
+	display: inline-block;
+	background: #11eed0;
+}
+
+
+.center {
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	-ms-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+}

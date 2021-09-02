@@ -1,0 +1,156 @@
+{% include 'partisi/header.html' %}
+{% include 'partisi/navbar.html' %}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+
+    <div class=" container-fluid" style="padding-top: 65px">
+        <!-- Breadcrumbs-->
+        <div class="row ml-1 mr-1 shadow" style="background:white; border-radius: 4px;">
+            <div class="col-sm-6">
+                <h3 class="m-0 text-dark pt-2 ml-2"> Akurasi</h3>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right mb-1" style="background: none;">
+                    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Beranda</a></li>
+                    <li class="breadcrumb-item active">Akurasi</li>
+                </ol>
+            </div><!-- /.col -->
+        </div>
+        <!-- DataTables Example -->
+        <div class="card ml-1 mr-1 mt-2 mb-5 shadow">
+            <div class="card-body">
+                <!-- <div class="row"> -->
+                <div class="container mb-3" style=" width: 400px;height:250px">
+                    <div class="card h-100 py-2" style="border: none">
+                        <div class="card-header text-md font-weight-bold text-dark text-uppercase"
+                            style="display:block;margin-left:auto;margin-right:auto">Akurasi Model Klasifikasi K-NN
+                            pada K =
+                            {{ tetangga }}
+                        </div>
+                        <div class=" card-body">
+                            <canvas id="myChart"></canvas>
+                            <script>
+                                var akurasi = {{ (akurasi) | safe}}
+
+                                var data = {
+                                    datasets: [{
+                                        backgroundColor: ['#F65058FF', '#F5F5F5',],
+                                        data: [akurasi, 100 - (akurasi)],
+                                        borderWidth: 0
+                                    }]
+                                };
+
+                                var promisedDeliveryChart = new Chart(document.getElementById('myChart'), {
+                                    type: 'doughnut',
+                                    data: data,
+                                    options: {
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        cutoutPercentage: 75,
+                                    }
+                                });
+
+                                Chart.pluginService.register({
+                                    beforeDraw: function (chart) {
+                                        var width = chart.chart.width,
+                                            height = chart.chart.height,
+                                            ctx = chart.chart.ctx;
+
+                                        ctx.restore();
+                                        var fontSize = (height / 114).toFixed(2);
+                                        ctx.font = fontSize + "em sans-serif";
+                                        ctx.textBaseline = "middle";
+
+                                        var text = akurasi + "%",
+                                            textX = Math.round((width - ctx.measureText(text).width) / 2),
+                                            textY = height / 1.9;
+
+                                        ctx.fillText(text, textX, textY);
+                                        ctx.save();
+                                    }
+                                });
+
+                            </script>
+
+                            <!-- <script>
+                            var ctx = document.getElementById('myChart').getContext('2d');
+                            var akurasi = {{ akurasi| safe}}
+                            var chart = new Chart(ctx, {
+                                // The type of chart we want to create
+                                type: 'doughnut',
+
+                                // The data for our dataset
+                                data: {
+                                    // labels: ['Accurate'],
+                                    datasets: [{
+                                        backgroundColor: ['#F65058FF', '#F5F5F5',],
+                                        data: [akurasi * 100, 100 - (akurasi * 100)],
+                                        borderWidth: 0
+                                    }]
+                                },
+
+                                // Configuration options go here
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    cutoutPercentage: 75,
+                                    plugins: {
+                                        doughnutlabel: {
+                                            labels: [{
+                                                text: akurasi * 100,
+                                                font: {
+                                                    size: 20,
+                                                    weight: 'bold'
+                                                }
+                                            }]
+                                        }
+                                    }
+                                }
+                            });
+                        </script> -->
+                        </div>
+                        <!-- </div> -->
+                    </div>
+
+                </div>
+                <p class="
+                text-center">Hasil evaluasi pada Confusion Matrix :</p>
+                <div>
+                    <table width="150" style="margin-left: auto; margin-right: auto;">
+                        <tr>
+                            <td>Akurasi</td>
+                            <td>:</td>
+                            <td>{{ akurasi }}%</td>
+                        </tr>
+                        <tr>
+                            <td>Precision</td>
+                            <td>:</td>
+                            <td>{{ precision }}%</td>
+                        </tr>
+                        <tr>
+                            <td>Recall</td>
+                            <td>:</td>
+                            <td>{{ recall }}%</td>
+                        </tr>
+                        <tr>
+                            <td>F1-Score</td>
+                            <td>:</td>
+                            <td>{{ f1score }}%</td>
+                        </tr>
+                    </table>
+                    <p>Time taken : {{ time_taken }} s</p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+
+</div>
+<!-- /.content-wrapper -->
+
+{% include 'partisi/sidebar.html' %}
+<!-- {% include 'partisi/footer.html' %} -->
