@@ -19,14 +19,105 @@
             </div><!-- /.col -->
         </div>
         <!-- DataTables Example -->
-        <div class="card ml-1 mr-1 mt-2 mb-5 shadow">
-            <div class="card-body">
-                {{result}}
+        <div class="row card ml-1 mr-1 mt-2 shadow">
+            <div class="col card-body">
+                <div class="container mt-2 ">
+                    <div class="row">
+                        <div class="col-5 ml-5 card" style="width:10px;">
+                            <div class="card-header text-md font-weight-bold text-dark text-uppercase"
+                                style="display:block;margin-left:auto;margin-right:auto">Grafik Jumlah Sentimen Data Uji
+                            </div>
+                            <div class="card-body">
+                                <canvas id="myChart"></canvas>
+                                <script>
+                                    var count_positif = {{ (count_positif) | safe}}
+                                    var count_negatif = {{ (count_negatif) | safe}}
+                                    var ctx = document.getElementById('myChart').getContext('2d');
+                                    var myBarChart = new Chart(ctx, {
+                                        type: 'bar',
+                                        data: {
+                                            labels: ["Stock"],
+                                            datasets: [{
+                                                label: 'Positif',
+                                                backgroundColor: ['#F65058FF'],
+                                                data: [count_positif],
+                                            }, {
+                                                label: 'Negatif',
+                                                backgroundColor: '#FBDE44FF',
+                                                data: [count_negatif],
+                                            }]
+                                        },
+                                        options: {
+                                            responsive: true,
+                                            scales: {
+                                                yAxes: [{
+                                                    ticks: {
+                                                        beginAtZero: true
+                                                    }
+                                                }],
+                                                xAxes: [{
+                                                    ticks: {
+                                                        display: false
+                                                    }
+                                                }],
+                                            }
+                                        }
+                                    });
+
+
+                                </script>
+                            </div>
+                        </div>
+                        <div class="col-1"></div>
+                        <div class="col-5 card mb-3">
+                            <div class="card-header text-md font-weight-bold text-dark text-uppercase"
+                                style="display:block;margin-left:auto;margin-right:auto">Persentase Sentimen Data Uji
+                            </div>
+                            <div class="card-body">
+                                <canvas id="myChart1"></canvas>
+                                <script>
+                                    var positif = {{ (positif) | safe}}
+                                    var negatif = {{ (negatif) | safe}}
+                                    var ctx = document.getElementById('myChart1').getContext('2d');
+                                    var chart = new Chart(ctx, {
+                                        // The type of chart we want to create
+                                        type: 'pie',
+
+                                        // The data for our dataset
+                                        data: {
+                                            labels: ['Positif', 'Negatif'],
+                                            datasets: [{
+                                                backgroundColor: ['#F65058FF', '#FBDE44FF', '#28334AFF'],
+                                                data: [positif, negatif]
+                                            }]
+                                        },
+
+                                        // Configuration options go here
+                                        options: {
+                                            responsive: true,
+                                            maintainAspectRatio: false,
+                                            tooltips: {
+                                                callbacks: {
+                                                    label: function (tooltipItem, data) {
+                                                        return data['labels'][tooltipItem['index']] + ': ' + data['datasets'][0]['data'][tooltipItem['index']] + '%';
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
     </div>
-    <!-- /.container-fluid -->
+</div>
+
+</div>
+<!-- /.container-fluid -->
 
 </div>
 <!-- /.content-wrapper -->

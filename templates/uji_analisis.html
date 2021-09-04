@@ -18,7 +18,12 @@
                 </ol>
             </div><!-- /.col -->
         </div>
-
+        {% for message in get_flashed_messages() %}
+        <div class="ml-1 mr-1 mt-2 alert alert-danger alert-dismissible" style="margin-bottom: 0px;">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <span>Lakukan <strong>{{message}}</strong> terlebih dahulu!</span>
+        </div>
+        {% endfor %}
         <!-- DataTables Example -->
         <div class="card ml-1 mr-1 mt-2 mb-5 shadow">
             <!-- <div class="card-header" style="background-color:#F9EBEA;"><i class="fas fa-table"></i> SKPD</div> -->
@@ -40,9 +45,40 @@
                         </div>
                     </form>
                     <div class="col">
-                        <a href="" class="btn btn-warning btn-md float-sm-right">Uji Analisis</a>
+                        <a data-target="#ujiModal" role="button" class="btn btn-warning btn-md float-sm-right"
+                            data-toggle="modal">Uji Analisis</a>
                     </div>
 
+                    <div id="ujiModal" class="modal fade">
+                        <div class="modal-dialog">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Form Uji Analisis Sentimen</h4>
+                                    <button type="button" class="close" data-dismiss="modal">×</button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" action="" enctype="multipart/form-data">
+                                        <div class="form-group row">
+                                            <label for="k" class="col-sm-4 col-form-label">Masukkan nilai K : </label>
+                                            <div class="col-sm-2">
+                                                <input type="number" min="1" class="form-control" id="neighbors"
+                                                    name="neighbors" value="" required>
+                                                <!-- <?= form_error('judul', '<small class="text-danger" >', '</small>'); ?> -->
+                                            </div>
+                                        </div>
+                                        <div class="form-group row justify-content-end">
+                                            <div class="col">
+                                                <button type="submit" class="btn btn-warning">Submit</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <!-- <button type="button" name="login_button" id="login_button"
+                                        class="btn btn-warning">Login</button> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
                 <!-- <?= form_error('judul', '<small class="text-danger" >', '</small>'); ?> -->
@@ -67,12 +103,12 @@
                             </tr>
                         </thead>
                         <tbody id="data">
-                            {% for i, j in result: %}
+                            {% for i, j, k in result: %}
                             <tr>
                                 <td>{{ loop.index }}</td>
                                 <td>{{ i }}</td>
                                 <td style="text-align:left">{{ j }}</td>
-                                <td></td>
+                                <td>{{ k }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

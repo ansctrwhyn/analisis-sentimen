@@ -18,6 +18,12 @@
                 </ol>
             </div><!-- /.col -->
         </div>
+        {% for message in get_flashed_messages() %}
+        <div class="ml-1 mr-1 mt-2 alert alert-danger alert-dismissible" style="margin-bottom: 0px;">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <span>Lakukan <strong>{{message}}</strong> terlebih dahulu!</span>
+        </div>
+        {% endfor %}
         <!-- DataTables Example -->
         <div class="card ml-1 mr-1 mt-2 mb-5 shadow">
             <div class="card-body">
@@ -25,7 +31,7 @@
                 <form method="POST" action="/akurasi" enctype="multipart/form-data">
                     <div class="form-group row">
                         <label for="k" class="col-sm-2 col-form-label">Masukkan nilai K : </label>
-                        <div class="col-sm-1">
+                        <div class="col-sm-1" style="margin-left: -30px;">
                             <input type="number" min="1" class="form-control" id="neighbors" name="neighbors" value=""
                                 required>
                             <!-- <?= form_error('judul', '<small class="text-danger" >', '</small>'); ?> -->

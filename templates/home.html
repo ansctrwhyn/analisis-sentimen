@@ -23,73 +23,39 @@
 				Twitter Mengenai Pelayanan Ekspedisi SiCepat Menggunakan Metode <i>K-Nearest Neighbor</i>
 			</h4>
 		</div>
-		<!-- <div class="row">
-			<div class="col-xl mb-6 pb-3">
-				<a href="<?= base_url('admin/informasi_berkala') ?>">
-					<div class="card shadow h-100 py-2" style="border-left:7px solid black">
-						<div class="card-body">
-							<div class="row no-gutters align-items-center">
-								<div class="col mr-2">
-									<div class="text-md font-weight-bold text-dark text-uppercase mb-2">Data Training</div>
-									<div class="h3 mb-0 font-weight-bold text-gray-800">
-										0
-									</div>
-								</div>
-								<div class="col-auto">
-									<i class=" fas fa-folder-open fa-2x text-gray-300"></i>
-								</div>
-							</div>
-						</div>
-					</div>
-				</a>
-			</div>
-			<div class="col-xl mb-6 pb-3">
-				<a href="<?= base_url() . 'admin/permohonan' ?>">
-					<div class="card shadow h-100 py-2" style="border-left:7px solid #dc3545">
-						<div class="card-body">
-							<div class="row no-gutters align-items-center">
-								<div class="col mr-2">
-									<div class="text-md font-weight-bold text-danger text-uppercase mb-2">Data Uji</div>
-									<div class="h3 mb-0 font-weight-bold text-gray-800">
-										0
-									</div>
-								</div>
-								<div class="col-auto">
-									<i class="fab fa-wpforms fa-2x text-gray-300"></i>
-								</div>
-							</div>
-						</div>
-					</div>
-				</a>
-			</div>
-			<div class="col-xl mb-6 pb-3">
-				<a href="<?= base_url() . 'admin/kotak_saran' ?>">
-					<div class="card shadow h-100 py-2" style="border-left:7px solid #28a745">
-						<div class="card-body">
-							<div class="row no-gutters align-items-center">
-								<div class="col mr-2">
-									<div class="text-md font-weight-bold text-success text-uppercase mb-2">Kotak Saran</div>
-									<div class="h3 mb-0 font-weight-bold text-gray-800">
 
-									</div>
-								</div>
-								<div class="col-auto">
-									<i class="fas fa-envelope fa-2x text-gray-300"></i>
-								</div>
-							</div>
-						</div>
-					</div>
-				</a>
-			</div>
-		</div> -->
 		<div class="col-xl pt-2 pl-5 pr-5">
 			<div class="card shadow">
 				<div class="card-header">
 					<i class="fas fa-info-circle"></i>
 					<span style="font-weight: bold;">Petunjuk Penggunaan</span>
 				</div>
-				<div class="card-body">
-					{{ data }}
+				<div class="card-body" style="text-align: justify; text-justify: inter-word;">
+					<ol>
+						<li>Import dataset dengan menekan tombol <i>Import Data</i> pada menu
+							<i>Dataset</i>.
+						</li>
+						<li>Lakukan text preprocessing dengan menekan tombol <i>Preprocessing</i> pada menu
+							<i>Dataset</i>.
+						</li>
+						<li>Hasil text preprocessing berupa cleansing, case folding, tokenizing, filtering,
+							dan stemming akan ditampilkan pada menu <i>Text Preprocessing</i>.</li>
+						<li>Lakukan klasifikasi dokumen dengan memasukkan nilai K (jumlah tetangga terdekat), lalu tekan
+							tombol <i>Klasifikasi</i> pada menu <i>Klasifikasi</i>.</li>
+						<li>Hasil akurasi dari model klasifikasi akan ditampilkan pada menu <i>Akurasi</i>.
+						</li>
+						<li>Lakukan crawling data dengan memasukkan jumlah
+							data yang akan diambil, lalu tekan tombol <i>Crawling</i> pada menu <i>Uji
+								Analisis Sentimen</i>.</li>
+						<li>Lakukan uji analisis sentimen dengan menekan tombol <i>Uji Analisis</i>. Kemudian
+							masukkan nilai K
+							(jumlah tetangga terdekat) pada <i>Form Uji Analisis Sentimen</i>, lalu tekan
+							tombol <i>Submit</i>.</li>
+						<li>Visualisasi hasil uji analisis sentimen akan ditampilkan pada menu
+							<i>Visualisasi</i>.
+						</li>
+
+					</ol>
 				</div>
 			</div>
 		</div>

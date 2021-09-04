@@ -1,22 +1,20 @@
 from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
-from numpy.core.fromnumeric import mean
-from sklearn import neighbors
 from sklearn.feature_extraction.text import TfidfVectorizer
-from flask import Flask, app, render_template, request, redirect, url_for, jsonify
+from sklearn.model_selection import KFold
+from collections import Counter
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from flask import Flask, app, render_template, request, redirect, url_for, jsonify, session, flash
+from flask_session import Session
 import mysql.connector
 import xlrd
 import os
-import pandas as pd
 import string
 import re
 import time
 import numpy as np
 import tweepy
-from collections import Counter
-from sklearn.model_selection import KFold
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
 
 factory = StopWordRemoverFactory()
 stopword = factory.create_stop_word_remover()
@@ -25,6 +23,9 @@ stemmer = factory.create_stemmer()
 vectorizer = TfidfVectorizer()
 
 app = Flask(__name__)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 # Database
 mydb = mysql.connector.connect(
@@ -72,12 +73,14 @@ def ajax_dataset():
         documentlist = mycursor.fetchall()
 
         data = []
+        i = 1
         for row in documentlist:
             data.append({
-                'id': row['id_doc'],
+                'id': i,
                 'dokumen': row['dokumen'],
                 'sentimen': row['sentimen']
             })
+            i += 1
 
         response = {
             'draw': draw,
@@ -187,11 +190,13 @@ def ajax_cleansing():
         cleansinglist = mycursor.fetchall()
 
         data = []
+        i = 1
         for row in cleansinglist:
             data.append({
-                'id': row['id'],
+                'id': i,
                 'cleansing': row['cleansing']
             })
+            i += 1
 
         response = {
             'draw': draw,
@@ -225,14 +230,16 @@ def ajax_casefolding():
 
         mycursor.execute(
             "SELECT * FROM case_folding limit %s, %s;", (row, rowperpage))
-        cleansinglist = mycursor.fetchall()
+        casefoldinglist = mycursor.fetchall()
 
         data = []
-        for row in cleansinglist:
+        i = 1
+        for row in casefoldinglist:
             data.append({
-                'id': row['id'],
+                'id': i,
                 'case_folding': row['case_folding']
             })
+            i += 1
 
         response = {
             'draw': draw,
@@ -266,14 +273,16 @@ def ajax_tokenizing():
 
         mycursor.execute(
             "SELECT * FROM tokenizing limit %s, %s;", (row, rowperpage))
-        cleansinglist = mycursor.fetchall()
+        tokenizinglist = mycursor.fetchall()
 
         data = []
-        for row in cleansinglist:
+        i = 1
+        for row in tokenizinglist:
             data.append({
-                'id': row['id'],
+                'id': i,
                 'tokenizing': row['tokenizing']
             })
+            i += 1
 
         response = {
             'draw': draw,
@@ -307,14 +316,16 @@ def ajax_filtering():
 
         mycursor.execute(
             "SELECT * FROM filtering limit %s, %s;", (row, rowperpage))
-        cleansinglist = mycursor.fetchall()
+        filteringlist = mycursor.fetchall()
 
         data = []
-        for row in cleansinglist:
+        i = 1
+        for row in filteringlist:
             data.append({
-                'id': row['id'],
+                'id': i,
                 'filtering': row['filtering']
             })
+            i += 1
 
         response = {
             'draw': draw,
@@ -348,14 +359,16 @@ def ajax_stemming():
 
         mycursor.execute(
             "SELECT * FROM stemming limit %s, %s;", (row, rowperpage))
-        cleansinglist = mycursor.fetchall()
+        stemminglist = mycursor.fetchall()
 
         data = []
-        for row in cleansinglist:
+        i = 1
+        for row in stemminglist:
             data.append({
-                'id': row['id'],
+                'id': i,
                 'stemming': row['stemming']
             })
+            i += 1
 
         response = {
             'draw': draw,
@@ -404,16 +417,6 @@ class KNNClassifier:
 
 @app.route('/akurasi', methods=["POST", "GET"])
 def akurasi():
-    # mycursor.execute(
-    #     "SELECT dokumen FROM document")
-    # documentlist = mycursor.fetchall()
-    # doc_list = [row['dokumen'] for row in documentlist]
-    # cleansing_result = [cleansing(text) for text in doc_list]
-    # casefolding_result = [case_folding(text) for text in cleansing_result]
-    # tokenizing_result = [tokenizing(text) for text in casefolding_result]
-    # filtering_result = [filtering(text) for text in casefolding_result]
-    # stemming_result = [stemming(text) for text in filtering_result]
-    # val = [['nama', 'saya', 'anisa'], ['cari', 'saya', 'disana']]
 
     if request.method == "POST":
         start = time.time()
@@ -427,7 +430,7 @@ def akurasi():
             new_strings.append(new_string)
         mydb.commit()
 
-        stemming_result = [' '.join(stemming(text)) for text in new_strings]
+        stemming_result = [' '.join(text) for text in new_strings]
         tfidf = vectorizer.fit_transform(stemming_result)
         # tokens = vectorizer.get_feature_names()
 
@@ -439,7 +442,6 @@ def akurasi():
         X = tfidf.toarray()
         y = sentimen
 
-        kf = KFold(n_splits=10)
         akurasi = []
         precision = []
         recall = []
@@ -450,6 +452,7 @@ def akurasi():
         totalf1score = 0
         k = 0
         n = int(request.form['neighbors'])
+        kf = KFold(n_splits=10)
         for train_index, test_index in kf.split(X, y):
             X_train, X_test = X[train_index], X[test_index]
             y_train, y_test = y[train_index], y[test_index]
@@ -483,6 +486,7 @@ def akurasi():
         end = time.time() - start
         return render_template('akurasi.html', akurasi=mean_accuracy, precision=mean_precision, recall=mean_recall, f1score=mean_f1score, tetangga=n, time_taken=end, menu="akurasi")
     else:
+        flash("Klasifikasi")
         return render_template('klasifikasi.html', menu="klasifikasi")
 
 
@@ -545,54 +549,94 @@ def stemming(text):
     return text
 
 
-def tfidf(text):
-    mycursor.execute(
-        "SELECT dokumen FROM document")
-    documentlist = mycursor.fetchall()
-    doc_list = [row['dokumen'] for row in documentlist]
-    cleansing_result = [cleansing(text) for text in doc_list]
-    casefolding_result = [case_folding(text) for text in cleansing_result]
-    # tokenizing_result = [tokenizing(text) for text in case_folding_result]
-    filtering_result = [filtering(text) for text in casefolding_result]
-    stemming_result = [stemming(text) for text in filtering_result]
-
-    vectorizer = TfidfVectorizer()
-    tfidf = vectorizer.fit_transform(stemming_result)
-    return(tfidf)
-
-
 @app.route('/ujianalisis', methods=["POST", "GET"])
 def uji_analisis():
 
     if request.method == "POST":
-        n = int(request.form['count'])
-        api = twitter_api()
-        date = []
-        text = []
-        search_key = "sicepat_ekspres -filter:retweets"
-        for tweet in tweepy.Cursor(api.search, q=search_key, lang='id', tweet_mode='extended', include_rts=False, exclude_replies=True).items(n):
-            date.append(str(tweet.created_at))
-            # query.append(tweet.text)
-            try:
-                text.append(tweet.retweeted_status.full_text)
-            except AttributeError:  # Not a Retweet
-                text.append(tweet.full_text)
+        if 'count' in request.form:
+            date = []
+            text = []
+            n = int(request.form['count'])
+            api = twitter_api()
+            search_key = "sicepat -from:sicepat_ekspres -filter:retweets"
+            for tweet in tweepy.Cursor(api.search, q=search_key, lang='id', result_type="recent", tweet_mode='extended', include_rts=False, exclude_replies=True).items(n):
+                date.append(str(tweet.created_at))
+                # query.append(tweet.text)
+                try:
+                    text.append(tweet.retweeted_status.full_text)
+                except AttributeError:  # Not a Retweet
+                    text.append(tweet.full_text)
 
-        query = preprocessing(text)
-        return render_template('uji_analisis.html', result=zip(date, query), menu="ujianalisis")
+            session['date'] = date
+            session['text'] = text
+            prediksi = []
+            for _ in range(len(session['text'])):
+                prediksi.append('Belum diketahui')
+
+            return render_template('uji_analisis.html', result=zip(session['date'], session['text'], prediksi), menu="ujianalisis")
+
+        if 'neighbors' in request.form:
+            mycursor.execute('SELECT stemming from stemming')
+            result = mycursor.fetchall()
+            list1 = [row['stemming'] for row in result]
+            new_strings = []
+
+            for string in list1:
+                new_string = eval(string)
+                new_strings.append(new_string)
+            mydb.commit()
+
+            stemming_result = [' '.join(text) for text in new_strings]
+            tfidf = vectorizer.fit_transform(stemming_result)
+
+            mycursor.execute(
+                "SELECT sentimen FROM document")
+            sentimenlist = mycursor.fetchall()
+            sentimen = np.array([row['sentimen'] for row in sentimenlist])
+
+            X = tfidf.toarray()
+            y = sentimen
+
+            vectorizer_uji = TfidfVectorizer(vocabulary=vectorizer.vocabulary_)
+            text_preprocessing = preprocessing(session['text'])
+            text = [' '.join(text) for text in text_preprocessing]
+            tfidf_query = vectorizer_uji.fit_transform(text)
+            query = tfidf_query.toarray()
+
+            k = int(request.form['neighbors'])
+            knn = KNNClassifier(k=k)
+            knn.fit(X, y)
+            query_pred = knn.predict(query)
+            session['prediksi'] = query_pred
+            return render_template('uji_analisis.html', result=zip(session['date'], session['text'], query_pred), menu="ujianalisis")
+        # session.pop('date')
+        # session.pop('text')
     else:
-
         return render_template('uji_analisis.html', menu="ujianalisis")
-
-
-def pengujian():
-    return
 
 
 @app.route('/visualisasi', methods=["POST", "GET"])
 def visualisasi():
+    if session['prediksi'] is not None:
+        list_positif = []
+        list_negatif = []
+        for data in session['prediksi']:
+            if data == 'Positif':
+                list_positif.append(data)
+            else:
+                list_negatif.append(data)
 
-    return render_template('visualisasi.html', menu="visualisasi")
+        count_positif = len(list_positif)
+        count_negatif = len(list_negatif)
+        positif = round(len(list_positif) /
+                        (len(session['prediksi'])) * 100, 2)
+        negatif = round(len(list_negatif) /
+                        (len(session['prediksi'])) * 100, 2)
+
+        return render_template('visualisasi.html', count_positif=count_positif, count_negatif=count_negatif, positif=positif, negatif=negatif, menu="visualisasi")
+    else:
+        flash("Uji Analisis Sentimen")
+        return render_template('uji_analisis.html', menu="ujianalisis")
 
 
 def twitter_api():
