@@ -30,16 +30,27 @@
                 <!-- <?= form_open_multipart('admin/addInformasiBerkala'); ?> -->
                 <form method="POST" action="/akurasi" enctype="multipart/form-data">
                     <div class="form-group row">
-                        <label for="k" class="col-sm-2 col-form-label">Masukkan nilai K : </label>
+                        <label for="k" class="col-sm-2 col-form-label">Nilai K</label>
                         <div class="col-sm-1" style="margin-left: -30px;">
                             <input type="number" min="1" class="form-control" id="neighbors" name="neighbors" value=""
                                 required>
                             <!-- <?= form_error('judul', '<small class="text-danger" >', '</small>'); ?> -->
                         </div>
                     </div>
-                    <div class="form-group row justify-content-end">
+                    <div class="form-group row">
+                        <label for="" class="col-sm-2 col-form-label">Distance metric</label>
+                        <div class="col-sm-3" style="margin-left: -30px;">
+                            <select name="distance" class="form-control" required>
+                                <option selected>--Pilih--</option>
+                                <option value="cosine">Cosine Similarity</option>
+                                <option value="euclidean">Euclidean Distance</option>
+                                <!-- <option value="3">Three</option> -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row float-right justify-content-end">
                         <div class="col">
-                            <button type="submit" class="btn btn-warning">Klasifikasi</button>
+                            <button type="submit" class="btn btn-primary">Klasifikasi</button>
                         </div>
                     </div>
                 </form>

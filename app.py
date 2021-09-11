@@ -2,6 +2,7 @@ from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFacto
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import KFold
+# from sklearn.neighbors import KNeighborsClassifier
 from collections import Counter
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from flask import Flask, app, render_template, request, redirect, url_for, jsonify, session, flash
@@ -391,7 +392,7 @@ def cos_sim(a, b):
     return dot_product / (norm_a * norm_b)
 
 
-class KNNClassifier:
+class KNNCosine:
     def __init__(self, k=3):
         self.k = k
 
@@ -415,11 +416,41 @@ class KNNClassifier:
         return most_common[0][0]
 
 
+def euclidean_distance(a, b):
+    return np.sqrt(np.sum((a - b)**2))
+
+
+class KNNEuclidean:
+    def __init__(self, k=3):
+        self.k = k
+
+    def fit(self, X, y):
+        self.X_train = X
+        self.y_train = y
+
+    def predict(self, X):
+        y_pred = [self._predict(x) for x in X]
+        return np.array(y_pred)
+
+    def _predict(self, x):
+        # Compute distances between x and all examples in the training set
+        distances = [euclidean_distance(x, x_train)
+                     for x_train in self.X_train]
+        # Sort by distance and return indices of the first k neighbors
+        k_idx = np.argsort(distances)[:self.k]
+        # Extract the labels of the k nearest neighbor training samples
+        k_neighbor_labels = [self.y_train[i] for i in k_idx]
+        # return the most common class label
+        most_common = Counter(k_neighbor_labels).most_common(1)
+        return most_common[0][0]
+
+
 @app.route('/akurasi', methods=["POST", "GET"])
 def akurasi():
 
     if request.method == "POST":
-        start = time.time()
+
+        # start = time.time()
         mycursor.execute('SELECT stemming from stemming')
         result = mycursor.fetchall()
         list1 = [row['stemming'] for row in result]
@@ -452,12 +483,17 @@ def akurasi():
         totalf1score = 0
         k = 0
         n = int(request.form['neighbors'])
+        distance = request.form['distance']
         kf = KFold(n_splits=10)
         for train_index, test_index in kf.split(X, y):
             X_train, X_test = X[train_index], X[test_index]
             y_train, y_test = y[train_index], y[test_index]
 
-            knn = KNNClassifier(k=n)
+            if distance == 'cosine':
+                knn = KNNCosine(k=n)
+            else:
+                knn = KNNEuclidean(k=n)
+
             knn.fit(X_train, y_train)
             y_pred = knn.predict(X_test)
             # print('hasil confusion matrix: \n', confusion_matrix(y_test, y_pred))
@@ -483,8 +519,8 @@ def akurasi():
         mean_precision = round(totalprecision/k * 100, 2)
         mean_recall = round(totalrecall/k * 100, 2)
         mean_f1score = round(totalf1score/k * 100, 2)
-        end = time.time() - start
-        return render_template('akurasi.html', akurasi=mean_accuracy, precision=mean_precision, recall=mean_recall, f1score=mean_f1score, tetangga=n, time_taken=end, menu="akurasi")
+        # end = time.time() - start
+        return render_template('akurasi.html', akurasi=mean_accuracy, precision=mean_precision, recall=mean_recall, f1score=mean_f1score, tetangga=n, menu="akurasi")
     else:
         flash("Klasifikasi")
         return render_template('klasifikasi.html', menu="klasifikasi")
@@ -597,14 +633,19 @@ def uji_analisis():
             X = tfidf.toarray()
             y = sentimen
 
-            vectorizer_uji = TfidfVectorizer(vocabulary=vectorizer.vocabulary_)
+            vectorizer_uji = TfidfVectorizer(
+                vocabulary=vectorizer.vocabulary_)
             text_preprocessing = preprocessing(session['text'])
             text = [' '.join(text) for text in text_preprocessing]
             tfidf_query = vectorizer_uji.fit_transform(text)
             query = tfidf_query.toarray()
 
-            k = int(request.form['neighbors'])
-            knn = KNNClassifier(k=k)
+            n = int(request.form['neighbors'])
+            distance = request.form['distance']
+            if distance == 'cosine':
+                knn = KNNCosine(k=n)
+            else:
+                knn = KNNEuclidean(k=n)
             knn.fit(X, y)
             query_pred = knn.predict(query)
             session['prediksi'] = query_pred
@@ -612,12 +653,15 @@ def uji_analisis():
         # session.pop('date')
         # session.pop('text')
     else:
-        return render_template('uji_analisis.html', menu="ujianalisis")
+        if not session.get('prediksi') is None:
+            return render_template('uji_analisis.html', result=zip(session['date'], session['text'], session['prediksi']), menu="ujianalisis")
+        else:
+            return render_template('uji_analisis.html', menu="ujianalisis")
 
 
 @app.route('/visualisasi', methods=["POST", "GET"])
 def visualisasi():
-    if session['prediksi'] is not None:
+    if not session.get('prediksi') is None:
         list_positif = []
         list_negatif = []
         for data in session['prediksi']:

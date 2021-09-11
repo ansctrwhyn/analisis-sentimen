@@ -45,8 +45,9 @@
                         </div>
                     </form>
                     <div class="col">
-                        <a data-target="#ujiModal" role="button" class="btn btn-warning btn-md float-sm-right"
-                            data-toggle="modal">Uji Analisis</a>
+                        <a data-target="#ujiModal" role="button" class="btn btn-primary text-white float-sm-right"
+                            data-toggle="modal">Uji
+                            Analisis</a>
                     </div>
 
                     <div id="ujiModal" class="modal fade">
@@ -60,16 +61,27 @@
                                 <div class="modal-body">
                                     <form method="POST" action="" enctype="multipart/form-data">
                                         <div class="form-group row">
-                                            <label for="k" class="col-sm-4 col-form-label">Masukkan nilai K : </label>
-                                            <div class="col-sm-2">
+                                            <label for="k" class="col-sm-5 col-form-label">Nilai K</label>
+                                            <div class="col-sm-2" style="margin-left: -30px;">
                                                 <input type="number" min="1" class="form-control" id="neighbors"
                                                     name="neighbors" value="" required>
                                                 <!-- <?= form_error('judul', '<small class="text-danger" >', '</small>'); ?> -->
                                             </div>
                                         </div>
-                                        <div class="form-group row justify-content-end">
+                                        <div class="form-group row">
+                                            <label for="" class="col-sm-5 col-form-label">Distance metric</label>
+                                            <div class="col-sm-5" style="margin-left: -30px;">
+                                                <select name="distance" class="form-control" required>
+                                                    <option selected>--Pilih--</option>
+                                                    <option value="cosine">Cosine Similarity</option>
+                                                    <option value="euclidean">Euclidean Distance</option>
+                                                    <!-- <option value="3">Three</option> -->
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row float-right justify-content-end">
                                             <div class="col">
-                                                <button type="submit" class="btn btn-warning">Submit</button>
+                                                <button type="submit" class="btn btn-primary">Submit</button>
                                             </div>
                                         </div>
                                     </form>
