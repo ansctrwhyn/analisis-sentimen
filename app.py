@@ -562,7 +562,13 @@ def cleansing(text):
 #     text = ' '.join(text.split())
     text = re.sub('\s+', ' ', text)
     # hapus single character
-    text = re.sub(r'\b[a-zA-Z]\b', '', text)
+    text = ' '.join(word for word in text.split() if len(word) > 1)
+    # hapus kata yang mengandung multiple same character
+    # text = re.compile(r'(.)\1{1,}', re.IGNORECASE).sub(r'\1', text)
+    # replace repeated character to single character
+    text = re.sub("(.)\\1{2,}", "\\1", text)
+    # hapus single character
+    text = ' '.join(word for word in text.split() if len(word) > 1)
     return text
 
 
@@ -585,8 +591,187 @@ def stemming(text):
     return text
 
 
-@app.route('/ujianalisis', methods=["POST", "GET"])
-def uji_analisis():
+@app.route('/pengujian1', methods=["POST", "GET"])
+def pengujian1():
+
+    k_values = [1, 3, 5, 7, 9, 11, 13, 15]
+
+    if not session.get('a1') is None:
+        return render_template('pengujian1.html', result=zip(k_values, session['a1'], session['p1'], session['r1'], session['f1']), menu="pengujian", submenu="pengujian1")
+    else:
+        mycursor.execute('SELECT stemming from stemming')
+        result = mycursor.fetchall()
+        list1 = [row['stemming'] for row in result]
+        new_strings = []
+
+        for string in list1:
+            new_string = eval(string)
+            new_strings.append(new_string)
+        mydb.commit()
+
+        stemming_result = [' '.join(text) for text in new_strings]
+        tfidf = vectorizer.fit_transform(stemming_result)
+        # tokens = vectorizer.get_feature_names()
+
+        mycursor.execute(
+            "SELECT sentimen FROM document")
+        sentimenlist = mycursor.fetchall()
+        sentimen = np.array([row['sentimen'] for row in sentimenlist])
+
+        X = tfidf.toarray()
+        y = sentimen
+
+        a = []
+        p = []
+        r = []
+        f = []
+        # t = []
+
+        for k in k_values:
+            # start = time.time()
+            akurasi = []
+            precision = []
+            recall = []
+            f1score = []
+            totalakurasi = 0
+            totalprecision = 0
+            totalrecall = 0
+            totalf1score = 0
+            cv = 0
+            # n = int(request.form['neighbors'])
+            kf = KFold(n_splits=10)
+            for train_index, test_index in kf.split(X, y):
+                X_train, X_test = X[train_index], X[test_index]
+                y_train, y_test = y[train_index], y[test_index]
+
+                knn = KNNCosine(k=k)
+                knn.fit(X_train, y_train)
+                y_pred = knn.predict(X_test)
+                nilaiakurasi = accuracy_score(y_test, y_pred)
+                akurasi.append(nilaiakurasi)
+                totalakurasi += nilaiakurasi
+                nilaiprecision = precision_score(
+                    y_test, y_pred, average='weighted')
+                precision.append(nilaiprecision)
+                totalprecision += nilaiprecision
+                nilairecall = recall_score(y_test, y_pred, average='weighted')
+                recall.append(nilairecall)
+                totalrecall += nilairecall
+                nilaif1score = f1_score(y_test, y_pred, average='weighted')
+                f1score.append(nilaif1score)
+                totalf1score += nilaif1score
+                cv += 1
+
+            mean_accuracy = round(totalakurasi/cv * 100, 2)
+            mean_precision = round(totalprecision/cv * 100, 2)
+            mean_recall = round(totalrecall/cv * 100, 2)
+            mean_f1score = round(totalf1score/cv * 100, 2)
+            a.append(mean_accuracy)
+            p.append(mean_precision)
+            r.append(mean_recall)
+            f.append(mean_f1score)
+            # end = round(time.time() - start, 2)
+            # t.append(end)
+
+        session['a1'] = a
+        session['p1'] = p
+        session['r1'] = r
+        session['f1'] = f
+        # session['t1'] = t
+        return render_template('pengujian1.html', result=zip(k_values, session['a1'], session['p1'], session['r1'], session['f1']), menu="pengujian", submenu="pengujian1")
+
+
+@app.route('/pengujian2', methods=["POST", "GET"])
+def pengujian2():
+    k_values = [1, 3, 5, 7, 9, 11, 13, 15]
+
+    if not session.get('a2') is None:
+        return render_template('pengujian2.html', result=zip(k_values, session['a2'], session['p2'], session['r2'], session['f2']), menu="pengujian", submenu="pengujian2")
+    else:
+        mycursor.execute('SELECT stemming from stemming')
+        result = mycursor.fetchall()
+        list1 = [row['stemming'] for row in result]
+        new_strings = []
+
+        for string in list1:
+            new_string = eval(string)
+            new_strings.append(new_string)
+        mydb.commit()
+
+        stemming_result = [' '.join(text) for text in new_strings]
+        tfidf = vectorizer.fit_transform(stemming_result)
+        # tokens = vectorizer.get_feature_names()
+
+        mycursor.execute(
+            "SELECT sentimen FROM document")
+        sentimenlist = mycursor.fetchall()
+        sentimen = np.array([row['sentimen'] for row in sentimenlist])
+
+        X = tfidf.toarray()
+        y = sentimen
+
+        a = []
+        p = []
+        r = []
+        f = []
+        # t = []
+
+        for k in k_values:
+            # start = time.time()
+            akurasi = []
+            precision = []
+            recall = []
+            f1score = []
+            totalakurasi = 0
+            totalprecision = 0
+            totalrecall = 0
+            totalf1score = 0
+            cv = 0
+            # n = int(request.form['neighbors'])
+            kf = KFold(n_splits=10)
+            for train_index, test_index in kf.split(X, y):
+                X_train, X_test = X[train_index], X[test_index]
+                y_train, y_test = y[train_index], y[test_index]
+
+                knn = KNNEuclidean(k=k)
+                knn.fit(X_train, y_train)
+                y_pred = knn.predict(X_test)
+                nilaiakurasi = accuracy_score(y_test, y_pred)
+                akurasi.append(nilaiakurasi)
+                totalakurasi += nilaiakurasi
+                nilaiprecision = precision_score(
+                    y_test, y_pred, average='weighted')
+                precision.append(nilaiprecision)
+                totalprecision += nilaiprecision
+                nilairecall = recall_score(y_test, y_pred, average='weighted')
+                recall.append(nilairecall)
+                totalrecall += nilairecall
+                nilaif1score = f1_score(y_test, y_pred, average='weighted')
+                f1score.append(nilaif1score)
+                totalf1score += nilaif1score
+                cv += 1
+
+            mean_accuracy = round(totalakurasi/cv * 100, 2)
+            mean_precision = round(totalprecision/cv * 100, 2)
+            mean_recall = round(totalrecall/cv * 100, 2)
+            mean_f1score = round(totalf1score/cv * 100, 2)
+            a.append(mean_accuracy)
+            p.append(mean_precision)
+            r.append(mean_recall)
+            f.append(mean_f1score)
+            # end = round(time.time() - start, 2)
+            # t.append(end)
+
+        session['a2'] = a
+        session['p2'] = p
+        session['r2'] = r
+        session['f2'] = f
+        # session['t2'] = t
+        return render_template('pengujian2.html', result=zip(k_values, session['a2'], session['p2'], session['r2'], session['f2']), menu="pengujian", submenu="pengujian2")
+
+
+@app.route('/pengujian3', methods=["POST", "GET"])
+def pengujian3():
 
     if request.method == "POST":
         if 'count' in request.form:
@@ -609,7 +794,7 @@ def uji_analisis():
             for _ in range(len(session['text'])):
                 prediksi.append('Belum diketahui')
 
-            return render_template('uji_analisis.html', result=zip(session['date'], session['text'], prediksi), menu="ujianalisis")
+            return render_template('pengujian3.html', result=zip(session['date'], session['text'], prediksi), menu="pengujian", submenu="pengujian3")
 
         if 'neighbors' in request.form:
             mycursor.execute('SELECT stemming from stemming')
@@ -649,14 +834,14 @@ def uji_analisis():
             knn.fit(X, y)
             query_pred = knn.predict(query)
             session['prediksi'] = query_pred
-            return render_template('uji_analisis.html', result=zip(session['date'], session['text'], query_pred), menu="ujianalisis")
+            return render_template('pengujian3.html', result=zip(session['date'], session['text'], query_pred), menu="pengujian", submenu="pengujian3")
         # session.pop('date')
         # session.pop('text')
     else:
         if not session.get('prediksi') is None:
-            return render_template('uji_analisis.html', result=zip(session['date'], session['text'], session['prediksi']), menu="ujianalisis")
+            return render_template('pengujian3.html', result=zip(session['date'], session['text'], session['prediksi']), menu="pengujian", submenu="pengujian3")
         else:
-            return render_template('uji_analisis.html', menu="ujianalisis")
+            return render_template('pengujian3.html', menu="pengujian", submenu="pengujian3")
 
 
 @app.route('/visualisasi', methods=["POST", "GET"])

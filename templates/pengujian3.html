@@ -1,0 +1,140 @@
+{% include 'partisi/header.html' %}
+{% include 'partisi/navbar.html' %}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+
+    <div class=" container-fluid" style="padding-top:65px">
+
+        <div class="row ml-1 mr-1 shadow" style="background:white; border-radius: 4px;">
+            <div class="col-sm-6">
+                <h3 class="m-0 text-dark pt-2 ml-2">Pengujian 3 : Uji Analisis Sentimen</h3>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right mb-1" style="background: none;">
+                    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Beranda</a></li>
+                    <li class="breadcrumb-item active">Pengujian 3</li>
+                </ol>
+            </div><!-- /.col -->
+        </div>
+        {% for message in get_flashed_messages() %}
+        <div class="ml-1 mr-1 mt-2 alert alert-danger alert-dismissible" style="margin-bottom: 0px;">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <span>Lakukan <strong>{{message}}</strong> terlebih dahulu!</span>
+        </div>
+        {% endfor %}
+        <!-- DataTables Example -->
+        <div class="card ml-1 mr-1 mt-2 mb-5 shadow">
+            <!-- <div class="card-header" style="background-color:#F9EBEA;"><i class="fas fa-table"></i> SKPD</div> -->
+            <div class="card-header" style="letter-spacing:1px;">
+                <!-- <h3><i class="fas fa-table"></i> TABEL DOKUMEN</h3> -->
+                <div class="row">
+                    <div class="col-sm-3 ">
+                        <label for="k" class="col-form-label">Masukkan jumlah data : </label>
+                    </div>
+                    <form method="POST" action="" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-sm-4" style="margin-left:-60px">
+                                <input type="number" min="1" class="form-control" id="count" name="count" value=""
+                                    required>
+                            </div>
+                            <div class="col ml-1">
+                                <button type="submit" class="btn btn-primary">Crawling</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="col">
+                        <a data-target="#ujiModal" role="button" class="btn btn-primary text-white float-sm-right"
+                            data-toggle="modal">Uji
+                            Analisis</a>
+                    </div>
+
+                    <div id="ujiModal" class="modal fade">
+                        <div class="modal-dialog">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Form Uji Analisis Sentimen</h4>
+                                    <button type="button" class="close" data-dismiss="modal">×</button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" action="" enctype="multipart/form-data">
+                                        <div class="form-group row">
+                                            <label for="k" class="col-sm-5 col-form-label">Nilai K</label>
+                                            <div class="col-sm-2" style="margin-left: -30px;">
+                                                <input type="number" min="1" class="form-control" id="neighbors"
+                                                    name="neighbors" value="" required>
+                                                <!-- <?= form_error('judul', '<small class="text-danger" >', '</small>'); ?> -->
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="" class="col-sm-5 col-form-label">Distance metric</label>
+                                            <div class="col-sm-5" style="margin-left: -30px;">
+                                                <select name="distance" class="form-control" required>
+                                                    <option selected>--Pilih--</option>
+                                                    <option value="cosine">Cosine Similarity</option>
+                                                    <option value="euclidean">Euclidean Distance</option>
+                                                    <!-- <option value="3">Three</option> -->
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row float-right justify-content-end">
+                                            <div class="col">
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <!-- <button type="button" name="login_button" id="login_button"
+                                        class="btn btn-warning">Login</button> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- <?= form_error('judul', '<small class="text-danger" >', '</small>'); ?> -->
+            </div>
+            <div class="card-body">
+                <!-- <div id="message"> -->
+                <!-- <?= $this->session->flashdata('message'); ?> -->
+                <!-- <div class="flash-skpd" data-flashdata="<?= $this->session->flashdata('skpd'); ?>"></div> -->
+
+                <!-- </div> -->
+                <!-- <br><br> -->
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center table-striped" id="tbquery" width="100%"
+                        cellspacing="0">
+                        <!-- edited table-->
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Date</th>
+                                <th>Query</th>
+                                <th>Sentimen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data">
+                            {% for i, j, k in result: %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ i }}</td>
+                                <td style="text-align:left">{{ j }}</td>
+                                <td>{{ k }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+
+</div>
+<!-- /.content-wrapper -->
+
+{% include 'partisi/sidebar.html' %}
+{% include 'partisi/footer.html' %}

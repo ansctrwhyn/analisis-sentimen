@@ -1,0 +1,64 @@
+{% include 'partisi/header.html' %}
+{% include 'partisi/navbar.html' %}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+
+    <div class=" container-fluid" style="padding-top: 65px">
+        <!-- Breadcrumbs-->
+        <div class="row ml-1 mr-1 shadow" style="background:white; border-radius: 4px;">
+            <div class="col-sm-9">
+                <h3 class="m-0 text-dark pt-2 ml-2">Pengujian 2 : K-Nearest Neighbor dengan Euclidean Distance</h3>
+            </div><!-- /.col -->
+            <div class="col-sm-3">
+                <ol class="breadcrumb float-sm-right mb-1" style="background: none;">
+                    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Beranda</a></li>
+                    <li class="breadcrumb-item active">Pengujian 2</li>
+                </ol>
+            </div><!-- /.col -->
+        </div>
+
+        <!-- DataTables Example -->
+        <div class="card ml-1 mr-1 mt-2 mb-5 shadow">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center table-striped" id="tbuji2" width="100%"
+                        cellspacing="0">
+                        <!-- edited table-->
+                        <thead>
+                            <tr>
+                                <th>K</th>
+                                <th>Akurasi</th>
+                                <th>Precision</th>
+                                <th>Recall</th>
+                                <th>F1-Score</th>
+                                <!-- <th>Time Taken</th> -->
+                            </tr>
+                        </thead>
+                        <tbody id="data">
+                            {% for i, j, k, l, m in result: %}
+                            <tr>
+                                <td>{{ i }}</td>
+                                <td>{{ j }}%</td>
+                                <td>{{ k }}%</td>
+                                <td>{{ l }}%</td>
+                                <td>{{ m }}%</td>
+                                <!-- <td>{{ n }} detik</td> -->
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+
+</div>
+<!-- /.content-wrapper -->
+
+{% include 'partisi/sidebar.html' %}
+{% include 'partisi/footer.html' %}

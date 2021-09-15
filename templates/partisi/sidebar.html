@@ -95,7 +95,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a href="{{ url_for('form_klasifikasi') }}"
                         class="nav-link {% if menu == 'klasifikasi' %} active {% endif %}">
                         <i class="nav-icon fas fa-table"></i>
@@ -111,22 +111,46 @@
                             Akurasi
                         </p>
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('uji_analisis') }}"
-                        class="nav-link {% if menu == 'ujianalisis' %} active {% endif %}">
+                </li> -->
+                <li class="nav-item has-treeview {% if menu == 'pengujian' %} menu-open {% endif %}">
+                    <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-hourglass-half"></i>
                         <p>
-                            Uji Analisis Sentimen
+                            Pengujian
+                            <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ url_for('pengujian1') }}"
+                                class="nav-link {% if submenu == 'pengujian1' %} active {% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Pengujian 1</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url_for('pengujian2') }}"
+                                class="nav-link {% if submenu == 'pengujian2' %} active {% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Pengujian 2</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url_for('pengujian3') }}"
+                                class="nav-link {% if submenu == 'pengujian3' %} active {% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Pengujian 3</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+
                 <li class="nav-item">
                     <a href="{{ url_for('visualisasi') }}"
                         class="nav-link {% if menu == 'visualisasi' %} active {% endif %}">
                         <i class="nav-icon fas fa-chart-pie"></i>
                         <p>
-                            Visualisasi
+                            Visualisasi Uji Analisis
                         </p>
                     </a>
                 </li>
