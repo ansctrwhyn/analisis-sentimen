@@ -15,7 +15,8 @@ import re
 import time
 import numpy as np
 import tweepy
-
+import datetime
+import pytz
 
 factory = StopWordRemoverFactory()
 stopword = factory.create_stop_word_remover()
@@ -594,10 +595,11 @@ def stemming(text):
 @app.route('/pengujian1', methods=["POST", "GET"])
 def pengujian1():
 
-    k_values = [1, 3, 5, 7, 9, 11, 13, 15]
+    k_values = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21]
 
     if not session.get('a1') is None:
-        return render_template('pengujian1.html', result=zip(k_values, session['a1'], session['p1'], session['r1'], session['f1']), menu="pengujian", submenu="pengujian1")
+        # session.clear()
+        return render_template('pengujian1.html', result=zip(k_values, session['a1'], session['p1'], session['r1'], session['f1'], session['t1']), menu="pengujian", submenu="pengujian1")
     else:
         mycursor.execute('SELECT stemming from stemming')
         result = mycursor.fetchall()
@@ -619,16 +621,17 @@ def pengujian1():
         sentimen = np.array([row['sentimen'] for row in sentimenlist])
 
         X = tfidf.toarray()
+        # X = np.array(stemming_result)
         y = sentimen
 
         a = []
         p = []
         r = []
         f = []
-        # t = []
+        t = []
 
         for k in k_values:
-            # start = time.time()
+            start = time.time()
             akurasi = []
             precision = []
             recall = []
@@ -644,20 +647,24 @@ def pengujian1():
                 X_train, X_test = X[train_index], X[test_index]
                 y_train, y_test = y[train_index], y[test_index]
 
+                # X_train = vectorizer.fit_transform(X_train)
+                # X_test = vectorizer.transform(X_test)
+
                 knn = KNNCosine(k=k)
                 knn.fit(X_train, y_train)
                 y_pred = knn.predict(X_test)
+
                 nilaiakurasi = accuracy_score(y_test, y_pred)
                 akurasi.append(nilaiakurasi)
                 totalakurasi += nilaiakurasi
                 nilaiprecision = precision_score(
-                    y_test, y_pred, average='weighted')
+                    y_test, y_pred, average='macro')
                 precision.append(nilaiprecision)
                 totalprecision += nilaiprecision
-                nilairecall = recall_score(y_test, y_pred, average='weighted')
+                nilairecall = recall_score(y_test, y_pred, average='macro')
                 recall.append(nilairecall)
                 totalrecall += nilairecall
-                nilaif1score = f1_score(y_test, y_pred, average='weighted')
+                nilaif1score = f1_score(y_test, y_pred, average='macro')
                 f1score.append(nilaif1score)
                 totalf1score += nilaif1score
                 cv += 1
@@ -670,23 +677,23 @@ def pengujian1():
             p.append(mean_precision)
             r.append(mean_recall)
             f.append(mean_f1score)
-            # end = round(time.time() - start, 2)
-            # t.append(end)
+            end = round(time.time() - start, 2)
+            t.append(end)
 
         session['a1'] = a
         session['p1'] = p
         session['r1'] = r
         session['f1'] = f
-        # session['t1'] = t
-        return render_template('pengujian1.html', result=zip(k_values, session['a1'], session['p1'], session['r1'], session['f1']), menu="pengujian", submenu="pengujian1")
+        session['t1'] = t
+        return render_template('pengujian1.html', result=zip(k_values, session['a1'], session['p1'], session['r1'], session['f1'], session['t1']), menu="pengujian", submenu="pengujian1")
 
 
 @app.route('/pengujian2', methods=["POST", "GET"])
 def pengujian2():
-    k_values = [1, 3, 5, 7, 9, 11, 13, 15]
+    k_values = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21]
 
     if not session.get('a2') is None:
-        return render_template('pengujian2.html', result=zip(k_values, session['a2'], session['p2'], session['r2'], session['f2']), menu="pengujian", submenu="pengujian2")
+        return render_template('pengujian2.html', result=zip(k_values, session['a2'], session['p2'], session['r2'], session['f2'], session['t2']), menu="pengujian", submenu="pengujian2")
     else:
         mycursor.execute('SELECT stemming from stemming')
         result = mycursor.fetchall()
@@ -714,10 +721,10 @@ def pengujian2():
         p = []
         r = []
         f = []
-        # t = []
+        t = []
 
         for k in k_values:
-            # start = time.time()
+            start = time.time()
             akurasi = []
             precision = []
             recall = []
@@ -736,17 +743,18 @@ def pengujian2():
                 knn = KNNEuclidean(k=k)
                 knn.fit(X_train, y_train)
                 y_pred = knn.predict(X_test)
+
                 nilaiakurasi = accuracy_score(y_test, y_pred)
                 akurasi.append(nilaiakurasi)
                 totalakurasi += nilaiakurasi
                 nilaiprecision = precision_score(
-                    y_test, y_pred, average='weighted')
+                    y_test, y_pred, average='macro')
                 precision.append(nilaiprecision)
                 totalprecision += nilaiprecision
-                nilairecall = recall_score(y_test, y_pred, average='weighted')
+                nilairecall = recall_score(y_test, y_pred, average='macro')
                 recall.append(nilairecall)
                 totalrecall += nilairecall
-                nilaif1score = f1_score(y_test, y_pred, average='weighted')
+                nilaif1score = f1_score(y_test, y_pred, average='macro')
                 f1score.append(nilaif1score)
                 totalf1score += nilaif1score
                 cv += 1
@@ -759,15 +767,27 @@ def pengujian2():
             p.append(mean_precision)
             r.append(mean_recall)
             f.append(mean_f1score)
-            # end = round(time.time() - start, 2)
-            # t.append(end)
+            end = round(time.time() - start, 2)
+            t.append(end)
 
         session['a2'] = a
         session['p2'] = p
         session['r2'] = r
         session['f2'] = f
-        # session['t2'] = t
-        return render_template('pengujian2.html', result=zip(k_values, session['a2'], session['p2'], session['r2'], session['f2']), menu="pengujian", submenu="pengujian2")
+        session['t2'] = t
+        return render_template('pengujian2.html', result=zip(k_values, session['a2'], session['p2'], session['r2'], session['f2'], session['t2']), menu="pengujian", submenu="pengujian2")
+
+
+def convert_datetime_timezone(dt, tz1, tz2):
+    tz1 = pytz.timezone(tz1)
+    tz2 = pytz.timezone(tz2)
+
+    dt = datetime.datetime.strptime(dt, "%Y-%m-%d %H:%M:%S")
+    dt = tz1.localize(dt)
+    dt = dt.astimezone(tz2)
+    dt = dt.strftime("%Y-%m-%d %H:%M:%S")
+
+    return dt
 
 
 @app.route('/pengujian3', methods=["POST", "GET"])
@@ -781,8 +801,11 @@ def pengujian3():
             api = twitter_api()
             search_key = "sicepat -from:sicepat_ekspres -filter:retweets"
             for tweet in tweepy.Cursor(api.search, q=search_key, lang='id', result_type="recent", tweet_mode='extended', include_rts=False, exclude_replies=True).items(n):
-                date.append(str(tweet.created_at))
+                utc = str(tweet.created_at)
+                local = convert_datetime_timezone(utc, "UTC", "Asia/Jakarta")
+                date.append(local)
                 # query.append(tweet.text)
+
                 try:
                     text.append(tweet.retweeted_status.full_text)
                 except AttributeError:  # Not a Retweet

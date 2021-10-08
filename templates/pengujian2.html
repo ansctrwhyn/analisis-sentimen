@@ -32,19 +32,19 @@
                                 <th>Akurasi</th>
                                 <th>Precision</th>
                                 <th>Recall</th>
-                                <th>F1-Score</th>
-                                <!-- <th>Time Taken</th> -->
+                                <th>F1-score</th>
+                                <th>Lama Waktu</th>
                             </tr>
                         </thead>
                         <tbody id="data">
-                            {% for i, j, k, l, m in result: %}
+                            {% for i, j, k, l, m, n in result: %}
                             <tr>
                                 <td>{{ i }}</td>
                                 <td>{{ j }}%</td>
                                 <td>{{ k }}%</td>
                                 <td>{{ l }}%</td>
                                 <td>{{ m }}%</td>
-                                <!-- <td>{{ n }} detik</td> -->
+                                <td>{{ n }} detik</td>
                             </tr>
                             {% endfor %}
                         </tbody>
